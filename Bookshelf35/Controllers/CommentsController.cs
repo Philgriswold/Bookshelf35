@@ -21,7 +21,7 @@ namespace Bookshelf35.Controllers
         public CommentsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _userManager = _userManager;
+            _userManager = userManager;
         }
 
         // GET: Comments
@@ -65,10 +65,13 @@ namespace Bookshelf35.Controllers
         // POST: Comments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        [HttpPost("comments/Create/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Text,ApplicationUserId,BookId")] Comment comment)
+        public async Task<IActionResult> Create(int id,[Bind("Id,Text")] Comment comment)
         {
+            comment.BookId = id;
+            var user = await GetCurrentUserAsync();
+            comment.ApplicationUserId = user.Id;
             if (ModelState.IsValid)
             {
                 _context.Add(comment);

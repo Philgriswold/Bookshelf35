@@ -37,8 +37,11 @@ namespace Bookshelf35.Controllers
             {
                 return NotFound();
             }
+            var user = await GetCurrentUserAsync();
 
             var book = await _context.Book
+                .Where(a => a.ApplicationUserId == user.Id)
+                .Include(b => b.ApplicationUser)
                 .Include(b => b.Author)
                 .Include(b => b.Comments)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -86,13 +89,14 @@ namespace Bookshelf35.Controllers
             {
                 return NotFound();
             }
+            var user = await GetCurrentUserAsync();
 
             var book = await _context.Book.FindAsync(id);
             if (book == null)
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "Id", book.AuthorId);
+            ViewData["AuthorId"] = new SelectList(_context.Author.Where(a => a.ApplicationUserId == user.Id), "Id", "Name", book.AuthorId);
             return View(book);
         }
 
@@ -107,6 +111,9 @@ namespace Bookshelf35.Controllers
             {
                 return NotFound();
             }
+
+            var user = await GetCurrentUserAsync();
+            book.ApplicationUserId = user.Id;
 
             if (ModelState.IsValid)
             {
@@ -128,7 +135,7 @@ namespace Bookshelf35.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "Id", book.AuthorId);
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "Name", book.AuthorId);
             return View(book);
         }
 
@@ -141,6 +148,7 @@ namespace Bookshelf35.Controllers
             }
 
             var book = await _context.Book
+                .Include(b => b.ApplicationUser)
                 .Include(b => b.Author)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (book == null)

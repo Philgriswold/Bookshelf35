@@ -42,6 +42,8 @@ namespace Bookshelf35.Controllers
 
             var user = await GetCurrentUserAsync();
             var author = await _context.Author
+                .Where(a => a.ApplicationUserId == user.Id)
+                .Include(a => a.Books)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (author == null)
