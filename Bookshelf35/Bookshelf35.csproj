@@ -5,6 +5,11 @@
     <UserSecretsId>aspnet-Bookshelf35-2BC954A7-83C0-4ABC-A403-6029D95D05CA</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Migrations\20200122160322_Add_Dummy_Sandwiche.cs" />
+    <Compile Remove="Migrations\20200122160322_Add_Dummy_Sandwiche.Designer.cs" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.0" />
