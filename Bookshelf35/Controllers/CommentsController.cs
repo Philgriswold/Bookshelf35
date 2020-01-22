@@ -67,7 +67,7 @@ namespace Bookshelf35.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("comments/Create/{id}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int id,[Bind("Id,Text")] Comment comment)
+        public async Task<IActionResult> Create(int id,[Bind("Text")] Comment comment)
         {
             comment.BookId = id;
             var user = await GetCurrentUserAsync();
@@ -78,7 +78,6 @@ namespace Bookshelf35.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", comment.ApplicationUserId);
             ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", comment.BookId);
             return View(comment);
         }
